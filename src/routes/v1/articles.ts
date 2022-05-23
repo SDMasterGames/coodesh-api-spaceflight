@@ -1,5 +1,10 @@
 import { Router } from "express";
 import { IControllerProps } from "../../@types/Controller";
+import { CreateArticleController } from "../../modules/articles/createArticle/";
+import { DeleteArticleByIdController } from "../../modules/articles/deleteArticleById";
+import { GetAllArticlesController } from "../../modules/articles/getAllArticles";
+import { GetArticleByIdController } from "../../modules/articles/getArticleById";
+import { UpdateArticleByIdController } from "../../modules/articles/updateArticleById";
 
 export class Controller implements IControllerProps {
   public path = "/articles";
@@ -9,15 +14,23 @@ export class Controller implements IControllerProps {
   }
 
   initializeRoutes() {
-    this.router.get(this.path, (req,res) => {
-      return res.status(200).send({
-        msg:"Articles Route get"
-      })
+    this.router.get(this.path, (req, res) => {
+      GetAllArticlesController.handle(req, res);
     });
     this.router.get(`${this.path}/:id`, (req, res) => {
-      return res.status(200).send({
-        msg: "Articles Route get by id",
-      });
+      GetArticleByIdController.handle(req, res);
     });
+
+    this.router.post(this.path, (req, res) =>
+      CreateArticleController.handle(req, res)
+    );
+
+    this.router.put(this.path, (req, res) =>
+      UpdateArticleByIdController.handle(req, res)
+    );
+
+    this.router.delete(`${this.path}/:id`, (req, res) =>
+      DeleteArticleByIdController.handle(req, res)
+    );
   }
 }

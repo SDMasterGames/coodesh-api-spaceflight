@@ -1,5 +1,5 @@
 import express from "express";
-import Routes from "./routes/";
+import { Controller } from "./routes/";
 export class App {
   private express: express.Application;
 
@@ -13,7 +13,7 @@ export class App {
     this.express.use(express.json());
   }
   private routes(): void {
-    Routes(this.express);
+    this.express.use(new Controller().router);
   }
 
   public listen(PORT: number | string): void {

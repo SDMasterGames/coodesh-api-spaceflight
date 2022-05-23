@@ -6,6 +6,30 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Article {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  featured    Boolean? @default(false)
+  summary     String?
+  title       String
+  url         String
+  imageUrl    String
+  newsSite    String
+  publishedAt String
+  launches    Launch[]
+  events      Event[]
+
+}
+
+type Launch {
+  id       String
+  provider String
+}
+
+type Event {
+  id       String
+  provider String
 }

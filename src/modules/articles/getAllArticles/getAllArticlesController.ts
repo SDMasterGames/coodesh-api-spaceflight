@@ -5,7 +5,7 @@ export class getAllArticlesController {
   constructor(private useCase: getAllArticlesUseCase) {}
   async handle(req: Request, res: Response) {
     try {
-      const response = await this.useCase.execute();
+      const response = await this.useCase.execute(req.query);
       return res.status(200).send(response);
     } catch (error: any) {
       return res.status(400).send({

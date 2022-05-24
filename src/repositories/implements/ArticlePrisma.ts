@@ -4,6 +4,7 @@ import {
   IArticlesRepository,
   ICreateArticleData,
   IfindByIdAndUpdateData,
+  IGetAllArticlesData,
 } from "../IArticlesRepository";
 
 export class ArticlePrisma implements IArticlesRepository {
@@ -21,8 +22,14 @@ export class ArticlePrisma implements IArticlesRepository {
     return article;
   }
 
-  async getAllArticles(): Promise<Article[]> {
-    return await prisma.article.findMany();
+  async getAllArticles({
+    limit,
+    page,
+  }: IGetAllArticlesData): Promise<Article[]> {
+    return await prisma.article.findMany({
+      take: limit,
+      skip: page == 1 ? 0 : (page - 1) * limit,
+    });
   }
   async deleteById(id: string): Promise<Article | null> {
     const article = await prisma.article.delete({
@@ -31,7 +38,10 @@ export class ArticlePrisma implements IArticlesRepository {
     return article || null;
   }
 
-  async findByIdAndUpdate(id: string, data: IfindByIdAndUpdateData): Promise<Article> {
+  async findByIdAndUpdate(
+    id: string,
+    data: IfindByIdAndUpdateData
+  ): Promise<Article> {
     const article = await prisma.article.update({
       where: { id },
       data: {

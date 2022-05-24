@@ -24,7 +24,7 @@ export class App implements App.IAppProps<Application> {
 
   public listen(PORT: number | string): void {
     this.server.listen(PORT, () =>
-      console.log(`Server is running on port ${PORT}`)
+      console.log(`\nServer is running on port ${PORT}`)
     );
   }
 }

@@ -32,10 +32,16 @@ export class ArticlePrisma implements IArticlesRepository {
     });
   }
   async deleteById(id: string): Promise<Article | null> {
-    const article = await prisma.article.delete({
-      where: { id },
-    });
-    return article || null;
+    try {
+      const article = await prisma.article.delete({
+        where: { id },
+      });
+      return article;
+    } catch (error: any) {
+      if (error.meta.cause == "Record to delete does not exist.") return null;
+      
+      throw new Error();
+    }
   }
 
   async findByIdAndUpdate(

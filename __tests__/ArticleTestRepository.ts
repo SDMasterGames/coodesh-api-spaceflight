@@ -1,4 +1,4 @@
-import { Article } from "@prisma/client";
+import { Article } from "../src/entities/Article";
 import { randomUUID } from "crypto";
 import {
   IArticlesRepository,

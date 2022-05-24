@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-import { ArticleTestRepository } from "../../../__tests__/ArticleTestRepository";
+import { ArticleTestRepository } from "../../__tests__/ArticleTestRepository";
 
 import { createArticleUseCase } from "./createArticle/createArticleUseCase";
 import { getArticleByIdUseCase } from "./getArticleById/getArticleByIdUseCase";

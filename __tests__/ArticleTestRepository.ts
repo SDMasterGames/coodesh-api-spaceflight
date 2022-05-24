@@ -4,6 +4,7 @@ import {
   IArticlesRepository,
   ICreateArticleData,
   IfindByIdAndUpdateData,
+  IGetAllArticlesData,
 } from "../src/repositories/IArticlesRepository";
 
 const ArticleRepo: Article[] = [];
@@ -32,7 +33,7 @@ export class ArticleTestRepository implements IArticlesRepository {
       resolve(article || null);
     });
   }
-  async getAllArticles(): Promise<Article[]> {
+  async getAllArticles(data: IGetAllArticlesData): Promise<Article[]> {
     return new Promise((resolve, reject) => {
       resolve(ArticleRepo);
     });
@@ -54,9 +55,9 @@ export class ArticleTestRepository implements IArticlesRepository {
   ): Promise<Article> {
     return new Promise((resolve, reject) => {
       const article = ArticleRepo.find((article) => article.id === id);
-      if(article){
+      if (article) {
         const result = { ...article, ...data };
-        resolve(result)
+        resolve(result);
       }
     });
   }

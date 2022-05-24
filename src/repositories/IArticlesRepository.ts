@@ -16,11 +16,16 @@ export interface IfindByIdAndUpdateData {
   title: string;
 }
 
+export interface IGetAllArticlesData{
+  limit:number;
+  page:number;
+}
+
 export interface IArticlesRepository {
   //getAll(): Promise<any>;
   createArticle(data: ICreateArticleData): Promise<Article>;
   findArticleById(id: string): Promise<Article | null>;
-  getAllArticles(): Promise<Article[]>;
+  getAllArticles(data:IGetAllArticlesData): Promise<Article[]>;
   deleteById(id: string): Promise<Article | null>;
   findByIdAndUpdate(
     id: string,

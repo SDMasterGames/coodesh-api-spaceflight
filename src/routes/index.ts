@@ -1,9 +1,5 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { IControllerProps } from "../@types/Controller";
-
-export class Controller implements IControllerProps {
+export class Controller implements Controller.IControllerProps<Router> {
   public path = "/";
   public router = Router();
   constructor() {
@@ -19,23 +15,5 @@ export class Controller implements IControllerProps {
         msg: "Back-end Challenge 2021 🏅 - Space Flight News",
       });
     });
-
-    this.getRoutesAllFiles();
-  }
-
-  getRoutesAllFiles() {
-    fs.readdirSync(__dirname)
-      .filter((files) => !files.startsWith("index"))
-      .forEach((folder) => {
-        fs.readdirSync(path.join(__dirname, folder)).forEach((file) => {
-          const { Controller } = require(path.join(__dirname, folder, file));
-
-          const route = new Controller();
-
-          const fullPath = `${this.path}${folder}`;
-
-          this.router.use(fullPath, route.router);
-        });
-      });
   }
 }

@@ -1,7 +1,5 @@
 import { Router } from "express";
-import { IControllerProps } from "../../@types/Controller";
-
-export class Controller implements IControllerProps {
+export class Controller implements Controller.IControllerProps<Router> {
   public path = "/";
   public router = Router();
   constructor() {

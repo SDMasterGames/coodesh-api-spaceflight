@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { IControllerProps } from "../../@types/Controller";
 import { CreateArticleController } from "../../modules/articles/createArticle/";
 import { DeleteArticleByIdController } from "../../modules/articles/deleteArticleById";
 import { GetAllArticlesController } from "../../modules/articles/getAllArticles";
 import { GetArticleByIdController } from "../../modules/articles/getArticleById";
 import { UpdateArticleByIdController } from "../../modules/articles/updateArticleById";
 
-export class Controller implements IControllerProps {
+export class Controller implements Controller.IControllerProps<Router> {
   public path = "/articles";
   public router = Router();
   constructor() {

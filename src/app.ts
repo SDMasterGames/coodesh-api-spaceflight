@@ -1,23 +1,29 @@
-import express from "express";
-import { Controller } from "./routes/";
-export class App {
-  private express: express.Application;
+import express, { Application, Router } from "express";
+import path from "path";
+import { getAllRoutesByFolders } from "./lib/getAllRoutesByFolders";
+export class App implements App.IAppProps<Application> {
+  public server: Application;
 
   constructor() {
-    this.express = express();
+    this.server = express();
     this.middleware();
     this.routes();
   }
 
-  private middleware(): void {
-    this.express.use(express.json());
+  public middleware(): void {
+    this.server.use(express.json());
   }
-  private routes(): void {
-    this.express.use(new Controller().router);
+  public routes(): void {
+    const { routes } = new getAllRoutesByFolders<Router>(
+      path.join(__dirname, "routes")
+    );
+    routes.forEach((route) => {
+      this.server.use(route.path, route.router);
+    });
   }
 
   public listen(PORT: number | string): void {
-    this.express.listen(PORT, () =>
+    this.server.listen(PORT, () =>
       console.log(`Server is running on port ${PORT}`)
     );
   }

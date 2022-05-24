@@ -16,10 +16,15 @@ export class ArticlePrisma implements IArticlesRepository {
   }
 
   async findArticleById(id: string): Promise<Article | null> {
-    const article = await prisma.article.findUnique({
-      where: { id },
-    });
-    return article;
+    try {
+      const article = await prisma.article.findUnique({
+        where: { id },
+      });
+      return article;
+    } catch (error: any) {
+      if (error.code == "P2023") throw new Error(`id invalid`);
+      throw new Error();
+    }
   }
 
   async getAllArticles({
@@ -38,8 +43,8 @@ export class ArticlePrisma implements IArticlesRepository {
       });
       return article;
     } catch (error: any) {
-      if (error.meta.cause == "Record to delete does not exist.") return null;
-      
+      if (error.code == "P2025") return null;
+      if (error.code == "P2023") throw new Error(`id invalid`);
       throw new Error();
     }
   }

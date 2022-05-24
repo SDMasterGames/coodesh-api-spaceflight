@@ -1,4 +1,7 @@
-import { Article } from "@prisma/client";
+import { Article } from '../../entities/Article';
+import { Event } from '../../entities/Event';
+import { Launch } from '../../entities/Launch';
+
 import { prisma } from "../../database/prisma";
 import {
   IArticlesRepository,

@@ -1,8 +1,10 @@
-import { Article, Event, Launch } from "@prisma/client";
+import { Article } from "../entities/Article";
+import { Event } from "../entities/Event";
+import { Launch } from "../entities/Launch";
 
 export interface ICreateArticleData {
-  featured?: boolean;
-  summary?: string;
+  featured?: boolean | null;
+  summary?: string | null;
   title: string;
   url: string;
   imageUrl: string;
@@ -16,19 +18,16 @@ export interface IfindByIdAndUpdateData {
   title: string;
 }
 
-export interface IGetAllArticlesData{
-  limit:number;
-  page:number;
+export interface IGetAllArticlesData {
+  limit: number;
+  page: number;
 }
 
 export interface IArticlesRepository {
   //getAll(): Promise<any>;
   createArticle(data: ICreateArticleData): Promise<Article>;
   findArticleById(id: string): Promise<Article | null>;
-  getAllArticles(data:IGetAllArticlesData): Promise<Article[]>;
+  getAllArticles(data: IGetAllArticlesData): Promise<Article[]>;
   deleteById(id: string): Promise<Article | null>;
-  findByIdAndUpdate(
-    id: string,
-    data: IfindByIdAndUpdateData
-  ): Promise<Article>;
+  findByIdAndUpdate(id: string, data: IfindByIdAndUpdateData): Promise<Article>;
 }

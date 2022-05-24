@@ -7,6 +7,7 @@ import { getArticleByIdUseCase } from "./getArticleById/getArticleByIdUseCase";
 import { getAllArticlesUseCase } from "./getAllArticles/getAllArticlesUseCase";
 import { deleteArticleByIdUseCase } from "./deleteArticleById/deleteArticleByIdUseCase";
 import { updateArticleByIdUseCase } from "./updateArticleById/updateArticleByIdUseCase";
+import { Article } from "../../entities/Article";
 
 const articleTestRepository = new ArticleTestRepository();
 
@@ -16,7 +17,7 @@ const GetAllArticlesUseCase = new getAllArticlesUseCase(articleTestRepository);
 const UpdateArticleById = new updateArticleByIdUseCase(articleTestRepository);
 const DeleteArticleById = new deleteArticleByIdUseCase(articleTestRepository);
 
-const articleTest = {
+const articleTest = new Article({
   id: randomUUID(),
   title: "Starliner launches to remain on Atlas 5",
   url: "https://spacenews.com/starliner-launches-to-remain-on-atlas-5/",
@@ -28,7 +29,7 @@ const articleTest = {
   featured: false,
   launches: [],
   events: [],
-};
+});
 
 describe("Module - Articles", () => {
   describe("Create Articles", () => {
@@ -63,17 +64,20 @@ describe("Module - Articles", () => {
     });
 
     it("should fail if the limit is invalid", async () => {
-      await expect(GetAllArticlesUseCase.execute({
-        limit:"a"
-      })).rejects.toThrow()
+      await expect(
+        GetAllArticlesUseCase.execute({
+          limit: "a",
+        })
+      ).rejects.toThrow();
     });
 
     it("should fail if the page is invalid", async () => {
-      await expect(GetAllArticlesUseCase.execute({
-        page:"a"
-      })).rejects.toThrow()
+      await expect(
+        GetAllArticlesUseCase.execute({
+          page: "a",
+        })
+      ).rejects.toThrow();
     });
-
   });
 
   describe("Update Article By Id", () => {

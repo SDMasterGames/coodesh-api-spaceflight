@@ -1,8 +1,8 @@
 import { Event, Launch } from "@prisma/client";
 
 export interface ICreateArticleRequestDTO {
-  featured?: boolean;
-  summary?: string;
+  featured?: boolean | null;
+  summary?: string | null;
   title: string;
   url: string;
   imageUrl: string;

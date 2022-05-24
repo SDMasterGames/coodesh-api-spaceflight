@@ -59,8 +59,21 @@ describe("Module - Articles", () => {
 
   describe("Get All Articles", () => {
     it("should get all articles", async () => {
-      await expect(GetAllArticlesUseCase.execute()).resolves.toHaveLength(1);
+      await expect(GetAllArticlesUseCase.execute({})).resolves.toHaveLength(1);
     });
+
+    it("should fail if the limit is invalid", async () => {
+      await expect(GetAllArticlesUseCase.execute({
+        limit:"a"
+      })).rejects.toThrow()
+    });
+
+    it("should fail if the page is invalid", async () => {
+      await expect(GetAllArticlesUseCase.execute({
+        page:"a"
+      })).rejects.toThrow()
+    });
+
   });
 
   describe("Update Article By Id", () => {

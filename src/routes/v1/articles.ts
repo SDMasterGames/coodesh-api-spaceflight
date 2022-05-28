@@ -24,7 +24,7 @@ export class Controller implements Controller.IControllerProps<Router> {
       CreateArticleController.handle(req, res)
     );
 
-    this.router.put(this.path, (req, res) =>
+    this.router.put(`${this.path}/:id`, (req, res) =>
       UpdateArticleByIdController.handle(req, res)
     );
 

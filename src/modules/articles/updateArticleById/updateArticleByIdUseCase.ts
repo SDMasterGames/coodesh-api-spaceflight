@@ -4,26 +4,28 @@ import { IUpdateArticleByIdDTO } from "./updateArticleByIdDTO";
 export class updateArticleByIdUseCase {
   constructor(private IArticlesRepository: IArticlesRepository) {}
 
-  async execute({ id, title }: IUpdateArticleByIdDTO) {
-    if (!id) {
+  async execute(data: IUpdateArticleByIdDTO) {
+    if (!data.id) {
       throw new Error("Id is required");
     }
 
-    const ArticleIsExist = await this.IArticlesRepository.findArticleById(id);
+    const ArticleIsExist = await this.IArticlesRepository.findArticleById(
+      data.id
+    );
 
     if (!ArticleIsExist) {
       throw new Error("Article not found");
     }
 
-    if (title) {
-      ArticleIsExist.title = title;
+    if (data.title) {
+      ArticleIsExist.title = data.title;
     }
-
+    const { id, ...update } = ArticleIsExist;
     const updatedArticle = await this.IArticlesRepository.findByIdAndUpdate(
       id,
-      ArticleIsExist
+      update
     );
-    
+
     return updatedArticle;
   }
 }

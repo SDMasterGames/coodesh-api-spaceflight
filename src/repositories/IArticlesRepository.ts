@@ -14,9 +14,7 @@ export interface ICreateArticleData {
   events: Event[];
 }
 
-export interface IfindByIdAndUpdateData {
-  title: string;
-}
+export interface IfindByIdAndUpdateData extends Omit<Article, "id"> {}
 
 export interface IGetAllArticlesData {
   limit: number;

@@ -9,7 +9,7 @@ export class Controller implements Controller.IControllerProps<Router> {
   initializeRoutes() {
     this.router.get(this.path, (req, res) => {
       return res.status(200).send({
-        msg: "v1",
+        msg: "Back-end Challenge 2021 🏅 - Space Flight News V1",
       });
     });
   }

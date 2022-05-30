@@ -24,8 +24,8 @@ export interface IGetAllArticlesData {
 export interface IArticlesRepository {
   //getAll(): Promise<any>;
   createArticle(data: ICreateArticleData): Promise<Article>;
-  findArticleById(id: string): Promise<Article | null>;
+  findArticleById(id: string): Promise<Article | null | ControllerError>;
   getAllArticles(data: IGetAllArticlesData): Promise<Article[]>;
-  deleteById(id: string): Promise<Article | null>;
-  findByIdAndUpdate(id: string, data: IfindByIdAndUpdateData): Promise<Article>;
+  deleteById(id: string): Promise<Article | null | ControllerError>;
+  findByIdAndUpdate(id: string, data: IfindByIdAndUpdateData): Promise<Article | ControllerError>;
 }

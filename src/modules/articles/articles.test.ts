@@ -8,6 +8,7 @@ import { getAllArticlesUseCase } from "./getAllArticles/getAllArticlesUseCase";
 import { deleteArticleByIdUseCase } from "./deleteArticleById/deleteArticleByIdUseCase";
 import { updateArticleByIdUseCase } from "./updateArticleById/updateArticleByIdUseCase";
 import { Article } from "../../entities/Article";
+import { InvalidParamsError } from "../adapters/errors";
 
 const articleTestRepository = new ArticleTestRepository();
 
@@ -46,78 +47,101 @@ describe("Module - Articles", () => {
     });
 
     it("should not find the article", async () => {
-      await expect(GetArticleById.execute("13246545")).rejects.toThrow(
-        "Article is not exist"
+      await expect(GetArticleById.execute("13246545")).resolves.toHaveProperty(
+        "code",
+        400
       );
     });
 
     it("should id is required", async () => {
-      await expect(GetArticleById.execute("")).rejects.toThrow(
-        "Id is required"
+      await expect(GetArticleById.execute("")).resolves.toHaveProperty(
+        "code",
+        400
       );
     });
   });
 
   describe("Get All Articles", () => {
     it("should get all articles", async () => {
-      await expect(GetAllArticlesUseCase.execute({})).resolves.toHaveLength(1);
+      const { body } = await GetAllArticlesUseCase.execute({});
+      expect(body).toHaveLength(1);
     });
 
     it("should fail if the limit is invalid", async () => {
-      await expect(
-        GetAllArticlesUseCase.execute({
-          limit: "a",
-        })
-      ).rejects.toThrow();
+      const { body, code } = await GetAllArticlesUseCase.execute({
+        limit: "a",
+      });
+
+      expect(code).toBe(400);
+      expect(body).toBe(
+        new InvalidParamsError("limit and page must be integer").message
+      );
     });
 
     it("should fail if the page is invalid", async () => {
-      await expect(
-        GetAllArticlesUseCase.execute({
-          page: "a",
-        })
-      ).rejects.toThrow();
+      const { body, code } = await GetAllArticlesUseCase.execute({
+        page: "a",
+      });
+
+      expect(code).toBe(400);
+      expect(body).toBe(
+        new InvalidParamsError("limit and page must be integer").message
+      );
     });
   });
 
   describe("Update Article By Id", () => {
     it("should update an article", async () => {
-      await expect(
-        UpdateArticleById.execute({
-          id: articleTest.id,
-          title: "new title",
-        })
-      ).resolves.toHaveProperty("title", "new title");
+      const { body, code } = await UpdateArticleById.execute({
+        id: articleTest.id,
+        title: "new title",
+      });
+      expect(code).toBe(200);
+      expect(body).toHaveProperty("title", "new title");
     });
 
     it("should not find the article", async () => {
-      await expect(
-        UpdateArticleById.execute({
-          id: "123456789",
-          title: "new title",
-        })
-      ).rejects.toThrow("Article not found");
+      const { body, code } = await UpdateArticleById.execute({
+        id: "123456789",
+        title: "new title",
+      });
+      expect(code).toBe(400);
+      expect(body).toBe("Article not found");
     });
 
     it("should id is required", async () => {
-      await expect(
-        UpdateArticleById.execute({
-          id: "",
-          title: "new title",
-        })
-      ).rejects.toThrow("Id is required");
+      const { body, code } = await UpdateArticleById.execute({
+        id: "",
+        title: "new title",
+      });
+      expect(code).toBe(400);
+      expect(body).toBe("Id is required");
     });
   });
 
   describe("Delete Article By Id", () => {
     it("should delete an article", async () => {
-      await expect(
-        DeleteArticleById.execute(articleTest.id)
-      ).resolves.not.toThrow();
+      const { body, code } = await DeleteArticleById.execute(articleTest.id);
+
+      expect(code).toBe(200);
+      expect(body).toHaveProperty("id", articleTest.id);
+    });
+
+    it("should id is required", async () => {
+      const { body, code } = await DeleteArticleById.execute("");
+      expect(code).toBe(400);
+      expect(body).toBe("Id is required");
     });
 
     it("should not find the article", async () => {
-      await expect(DeleteArticleById.execute("123154")).rejects.toThrow();
+      const { body, code } = await DeleteArticleById.execute("123154");
+      expect(code).toBe(400);
+      expect(body).toBe("Article not found");
+    });
+    it("should have successfully deleted", async () => {
+      const { body, code } = await GetArticleById.execute(articleTest.id);
+      expect(code).toBe(400);
+      expect(body).toBe("Article is not exist");
     });
   });
 });

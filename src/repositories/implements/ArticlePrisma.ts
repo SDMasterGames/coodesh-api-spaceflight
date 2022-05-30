@@ -1,6 +1,6 @@
-import { Article } from '../../entities/Article';
-import { Event } from '../../entities/Event';
-import { Launch } from '../../entities/Launch';
+import { Article } from "../../entities/Article";
+import { Event } from "../../entities/Event";
+import { Launch } from "../../entities/Launch";
 
 import { prisma } from "../../database/prisma";
 import {
@@ -9,6 +9,7 @@ import {
   IfindByIdAndUpdateData,
   IGetAllArticlesData,
 } from "../IArticlesRepository";
+import { IdInvalidError, NotFoundError, UnexpectedError } from "../errors";
 
 export class ArticlePrisma implements IArticlesRepository {
   async createArticle(article: ICreateArticleData): Promise<Article> {
@@ -18,15 +19,15 @@ export class ArticlePrisma implements IArticlesRepository {
     return prismaArticle;
   }
 
-  async findArticleById(id: string): Promise<Article | null> {
+  async findArticleById(id: string): Promise<Article | null | ControllerError> {
     try {
       const article = await prisma.article.findUnique({
         where: { id },
       });
-      return article;
+      return article ? new Article(article) : null;
     } catch (error: any) {
-      if (error.code == "P2023") throw new Error(`id invalid`);
-      throw new Error();
+      if (error.code == "P2023") return new IdInvalidError();
+      return new UnexpectedError(error.message);
     }
   }
 
@@ -39,29 +40,31 @@ export class ArticlePrisma implements IArticlesRepository {
       skip: page == 1 ? 0 : (page - 1) * limit,
     });
   }
-  async deleteById(id: string): Promise<Article | null> {
+  async deleteById(id: string): Promise<Article | null | ControllerError> {
     try {
       const article = await prisma.article.delete({
         where: { id },
       });
-      return article;
+      return new Article(article);
     } catch (error: any) {
       if (error.code == "P2025") return null;
-      if (error.code == "P2023") throw new Error(`id invalid`);
-      throw new Error();
+      if (error.code == "P2023") return new IdInvalidError();
+      return new UnexpectedError(error.message);
     }
   }
 
   async findByIdAndUpdate(
     id: string,
     data: IfindByIdAndUpdateData
-  ): Promise<Article> {
-    const article = await prisma.article.update({
-      where: { id },
-      data: {
-        ...data,
-      },
-    });
-    return article;
+  ): Promise<Article | ControllerError> {
+    try {
+      const article = await prisma.article.update({
+        where: { id },
+        data,
+      });
+      return new Article(article);
+    } catch (error: any) {
+      return new UnexpectedError(error.message);
+    }
   }
 }

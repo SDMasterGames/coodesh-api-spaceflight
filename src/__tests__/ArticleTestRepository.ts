@@ -1,4 +1,5 @@
 import { Article } from "../entities/Article";
+import { NotFoundError } from "../repositories/errors";
 import {
   IArticlesRepository,
   ICreateArticleData,
@@ -22,14 +23,14 @@ export class ArticleTestRepository implements IArticlesRepository {
       };
       ArticleRepo.push(articleNew);
 
-      resolve(articleNew);
+      resolve(new Article(articleNew));
     });
   }
 
-  async findArticleById(id: string): Promise<Article | null> {
+  async findArticleById(id: string): Promise<Article | null | ControllerError> {
     return new Promise((resolve, reject) => {
       const article = ArticleRepo.find((article) => article.id === id);
-      resolve(article || null);
+      resolve(article ? new Article(article) : null);
     });
   }
   async getAllArticles(data: IGetAllArticlesData): Promise<Article[]> {
@@ -38,26 +39,27 @@ export class ArticleTestRepository implements IArticlesRepository {
     });
   }
 
-  async deleteById(id: string): Promise<Article | null> {
+  async deleteById(id: string): Promise<Article | null | ControllerError> {
     return new Promise((resolve, reject) => {
       const article = ArticleRepo.find((article) => article.id === id);
       if (article) {
         ArticleRepo.splice(ArticleRepo.indexOf(article), 1);
       }
-      resolve(article || null);
+      resolve(article ? new Article(article) : null);
     });
   }
 
   async findByIdAndUpdate(
     id: string,
     data: IfindByIdAndUpdateData
-  ): Promise<Article> {
+  ): Promise<Article | ControllerError> {
     return new Promise((resolve, reject) => {
       const article = ArticleRepo.find((article) => article.id === id);
       if (article) {
         const result = { ...article, ...data };
-        resolve(result);
+        resolve(new Article(result));
       }
+      resolve(new NotFoundError());
     });
   }
 }

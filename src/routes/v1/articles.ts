@@ -13,23 +13,39 @@ export class Controller implements Controller.IControllerProps<Router> {
   }
 
   initializeRoutes() {
-    this.router.get(this.path, (req, res) => {
-      GetAllArticlesController.handle(req, res);
+    this.router.get(this.path, async (req, res) => {
+      const { body, code } = await GetAllArticlesController.handle({
+        query: req.query,
+      });
+      return res.status(code).json(body);
     });
-    this.router.get(`${this.path}/:id`, (req, res) => {
-      GetArticleByIdController.handle(req, res);
+    this.router.get(`${this.path}/:id`, async (req, res) => {
+      const { body, code } = await GetArticleByIdController.handle({
+        params: req.params,
+      });
+      return res.status(code).json(body);
     });
 
-    this.router.post(this.path, (req, res) =>
-      CreateArticleController.handle(req, res)
-    );
+    this.router.post(this.path, async (req, res) => {
+      const { body, code } = await CreateArticleController.handle({
+        body: req.body,
+      });
+      return res.status(code).json(body);
+    });
 
-    this.router.put(`${this.path}/:id`, (req, res) =>
-      UpdateArticleByIdController.handle(req, res)
-    );
+    this.router.put(`${this.path}/:id`, async (req, res) => {
+      const { body, code } = await UpdateArticleByIdController.handle({
+        params: req.params,
+        body: req.body,
+      });
+      return res.status(code).json(body);
+    });
 
-    this.router.delete(`${this.path}/:id`, (req, res) =>
-      DeleteArticleByIdController.handle(req, res)
-    );
+    this.router.delete(`${this.path}/:id`, async (req, res) => {
+      const { body, code } = await DeleteArticleByIdController.handle({
+        params: req.params,
+      });
+      return res.status(code).json(body);
+    });
   }
 }
